@@ -1,0 +1,27 @@
+<project name="3rdPartyDependencies" default="build">
+	<!--checking if for windows and non windows OS-->
+	<target depends="build-windows, build-unix" name="build"/>
+
+	<condition property="isOSWindows">
+		<os family="windows" />
+	</condition>
+
+	<target name="build-windows" if="isOSWindows">
+		<exec dir="boost" executable="cmd" failonerror="true">
+			<arg line="/c bootstrap.bat"/>
+		</exec>
+		<exec dir="boost" executable="cmd" failonerror="true">
+			<arg line="/c .\b2" />
+		</exec>
+	</target>
+
+	<target name="build-unix" unless="isOSWindows">
+		<exec dir="boost" executable="/bin/sh" failonerror="true">
+			<arg line="-c bootstrap.sh"/>
+		</exec>
+		<exec dir="boost" executable="/bin/sh" failonerror="true">
+			<arg line="-c ./b2" />
+		</exec>
+	</target>
+
+</project>
