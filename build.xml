@@ -5,13 +5,16 @@
 	<condition property="isOSWindows">
 		<os family="windows" />
 	</condition>
+	
+	<!-- Argument to select which boost modules are compiled. Saves time and storage space -->
+	<property name="reqBoostLibs" value="--with-chrono --with-date_time --with-filesystem --with-math --with-system --with-thread" />
 
 	<target name="build-windows" if="isOSWindows">
 		<exec dir="boost" executable="cmd" failonerror="true">
 			<arg line="/c bootstrap.bat"/>
 		</exec>
 		<exec dir="boost" executable="cmd" failonerror="true">
-			<arg line="/c .\b2" />
+			<arg line="/c .\b2 release ${reqBoostLibs}" />
 		</exec>
 	</target>
 
@@ -20,8 +23,13 @@
 			<arg line="-c bootstrap.sh"/>
 		</exec>
 		<exec dir="boost" executable="/bin/sh" failonerror="true">
-			<arg line="-c ./b2" />
+			<arg line="-c ./b2 release ${reqBoostLibs}" />
 		</exec>
 	</target>
 
+	<target name="clean">
+		<exec dir="boost" executable="cmd" failonerror="true">
+			<arg line=" echo /c .\b2 --clean-all" />
+		</exec>
+	</target>
 </project>
