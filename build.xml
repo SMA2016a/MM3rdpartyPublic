@@ -26,7 +26,7 @@
 			<arg line="-c bootstrap.sh"/>
 		</exec>
 		<exec dir="boost" executable="/bin/sh" failonerror="true">
-			<arg line="-c ./b2 release ${reqBoostLibs}" />
+			<arg line="-c ./b2 ${reqBoostLibs}" />
 		</exec>
 	</target>
 
