@@ -14,7 +14,10 @@
 			<arg line="/c bootstrap.bat"/>
 		</exec>
 		<exec dir="boost" executable="cmd" failonerror="true">
-			<arg line="/c .\b2 release ${reqBoostLibs}" />
+			<arg line="/c .\b2 ${reqBoostLibs} architecture=x86 address-model=32 --stagedir=stage_Win32"/>
+		</exec>
+		<exec dir="boost" executable="cmd" failonerror="true">
+			<arg line="/c .\b2 ${reqBoostLibs} architecture=x86 address-model=64 --stagedir=stage_x64"/>
 		</exec>
 	</target>
 
