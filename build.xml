@@ -10,20 +10,42 @@
 	<property name="reqBoostLibs" value="--with-chrono --with-date_time --with-filesystem --with-math --with-system --with-thread" />
 
 	<target name="build-windows" if="isOSWindows">
+		<!-- Find the bat file that activates the Visual Studio environment -->		
+		<local name="env"/>
+		<property environment="env"/>
+		<local name="activateVSVarsBat"/>
+		<property name="activateVSVarsBat" value="${env.VS100COMNTOOLS}vsvars32.bat"/>
+		<fail message="Cannot locate vsvars32.bat for Visual Studio 2010">
+			<condition> <not> <available file="${activateVSVarsBat}"/> </not> </condition>
+		</fail>	
+		
+		<!-- Activate the VS2010 environment, bootstrap the build system, make sure all header links are in place. build Release and Debug for 32bit and 64bit. -->
+		<echo file="boost\temp.bat">
+			@echo off
+			call "${activateVSVarsBat}"
+			if errorlevel 1 exit /b
+			call bootstrap.bat
+			if errorlevel 1 exit /b
+			.\b2 headers
+			if errorlevel 1 exit /b
+			.\b2 ${reqBoostLibs} architecture=x86 address-model=32 --stagedir=stage_Win32
+			if errorlevel 1 exit /b
+			.\b2 ${reqBoostLibs} architecture=x86 address-model=64 --stagedir=stage_x64
+		</echo>
 		<exec dir="boost" executable="cmd" failonerror="true">
-			<arg line="/c bootstrap.bat"/>
+			<arg value="/c"/>
+			<arg value="temp.bat"/>
 		</exec>
-		<exec dir="boost" executable="cmd" failonerror="true">
-			<arg line="/c .\b2 ${reqBoostLibs} architecture=x86 address-model=32 --stagedir=stage_Win32"/>
-		</exec>
-		<exec dir="boost" executable="cmd" failonerror="true">
-			<arg line="/c .\b2 ${reqBoostLibs} architecture=x86 address-model=64 --stagedir=stage_x64"/>
-		</exec>
+		<delete file="temp.bat"/>
+		
 	</target>
 
 	<target name="build-unix" unless="isOSWindows">
 		<exec dir="boost" executable="/bin/sh" failonerror="true">
 			<arg line="-c bootstrap.sh"/>
+		</exec>
+		<exec dir="boost" executable="/bin/sh" failonerror="true">
+			<arg line="-c ./b2 headers" />
 		</exec>
 		<exec dir="boost" executable="/bin/sh" failonerror="true">
 			<arg line="-c ./b2 ${reqBoostLibs}" />
