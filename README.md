@@ -1,3 +1,5 @@
+**This Repository is WIP and should not currently be used to build Micro-Manager**
+
 This repository is adapted from the svn repository at https://valelab4.ucsf.edu/svn/3rdpartypublic/
 It provides all publically available dependencies that are needed to build the Micro-Manager project. This repository is used as a submodule of the main project.
 
